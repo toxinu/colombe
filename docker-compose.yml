@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:9
+    environment:
+      POSTGRES_DB: holyter
+      POSTGRES_USER: holyter
+      POSTGRES_PASSWORD: holyter
+    ports:
+      - 127.0.0.1:15433:5432
+  redis:
+    image: redis:3
+    ports:
+      - 127.0.0.1:16380:6379
+  rabbitmq:
+    image: rabbitmq:3.6-management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: holyter
+    ports:
+      - 127.0.0.1:5683:5672
+      - 127.0.0.1:15673:15672
+  
