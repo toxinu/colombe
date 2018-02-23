@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>
+	<em>Welcome here,</em>
+	{% if request.user.is_authenticated %}
+		<h3>Your own block lists</h3>
+		<em><a href="{% url 'block-list-add' %}">Create a new one?</a></em>
+		<ul>
+		{% for block_list in block_lists %}
+			<li><a href="{{ block_list.get_absolute_url }}">{{ block_list.name }}</a> (<em>{{ block_list.subscribers }} subscribers</em>)</li>
+		{% empty %}
+			<em>No block list for now...</em>
+		{% endfor %}
+		</ul>
+		<h3>Subscribed block lists</h3>
+		<ul>
+		{% for subscription in subscriptions %}
+			{% with subscription.block_list as block_list %}     
+				<li>
+					<a href="{{ block_list.get_absolute_url }}">{{ block_list.name }}</a>
+					(<em>{{ block_list.users_count }} blocked users</em>)
+				</li>
+			{% endwith %}
+		{% empty %}
+			<em>No subscribed block list for now...</em>
+		{% endfor %}
+		</ul>
+	{% else %}
+	<p>Presentating Colombe.</p>
+	{% endif %}
+</p>
+{% endblock %}

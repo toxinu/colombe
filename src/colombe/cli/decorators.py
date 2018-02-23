@@ -10,7 +10,7 @@ def configuration(f):
         # HACK: We can't call `configure()` from within tests
         # since we don't load config files from disk, so we
         # need a way to bypass this initialization step
-        if os.environ.get('_HOLYTER_SKIP_CONFIGURATION') != '1':
+        if os.environ.get('_COLOMBE_SKIP_CONFIGURATION') != '1':
             from munch.runner import configure
             configure()
         return ctx.invoke(f, *args, **kwargs)

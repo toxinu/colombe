@@ -7,7 +7,7 @@ from setuptools import find_packages
 base_dir = os.path.dirname(__file__)
 
 about = {}
-with open(os.path.join(base_dir, "src", "holyter", "__about__.py")) as f:
+with open(os.path.join(base_dir, "src", "colombe", "__about__.py")) as f:
     exec(f.read(), about)
 
 with open(os.path.join(base_dir, "README.md")) as f:
@@ -15,10 +15,14 @@ with open(os.path.join(base_dir, "README.md")) as f:
 
 requires = [
     "Django==2.0.2",
+    "celery==4.1.0",
     "click==6.7",
     "django-countries==5.1.1",
     "psycopg2-binary==2.7.4",
     "python-twitter==3.4",
+    "django-redis==4.8.0",
+    "restless==2.1.1",
+    "social-auth-app-django==2.1.0 ",
 ]
 
 setup(
@@ -34,7 +38,7 @@ setup(
     url=about["__uri__"],
     install_requires=requires,
     license=about["__license__"],
-    entry_points={'console_scripts': ['holyter = holyter.runner:main']},
+    entry_points={'console_scripts': ['colombe = colombe.cli:main']},
     extras_require={'dev': ['docker-compose==1.19.0'],
                     'tests': []},
     classifiers=[

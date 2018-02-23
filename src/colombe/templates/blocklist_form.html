@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" class="post-form">{% csrf_token %}
+	{{ form.as_p }}
+	<label for="id_users">Users:</label>
+	<br />
+	<em><label for="id_users_as_id">As ID?</label></em>
+	<input type="checkbox" name="users_as_id" id="id_users_as_id">
+	<textarea name="users" cols="40" rows="10" maxlength="2048" id="id_users">{{ users }}</textarea>
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
+{% endblock %}

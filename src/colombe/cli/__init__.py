@@ -3,7 +3,7 @@ import os
 import click
 from django.utils.module_loading import import_string
 
-import holyter
+import colombe
 
 
 @click.group()
@@ -13,25 +13,26 @@ import holyter
     envvar='DJANGO_SETTINGS_MODULE',
     help='Path to settings module.',
     metavar='PATH')
-@click.version_option(version=holyter.__version__)
+@click.version_option(version=colombe.__version__)
 @click.pass_context
 def cli(ctx, settings):
     """Holyter is an emailing platform.
 
-    Default settings module is `holyter.settings` but
+    Default settings module is `colombe.settings` but
     it can be overridden with `DJANGO_CONFIG_MODULE`
     or with `--settings` parameter.
     """
     # Elevate --settings option to DJANGO_CONFIG_MODULE env var
     if settings:
         os.environ['DJANGO_SETTINGS_MODULE'] = settings
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'holyter.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'colombe.settings')
 
 
 list(
     map(lambda cmd: cli.add_command(import_string(cmd)),
-        ('holyter.runner.commands.help.help',
-         'holyter.runner.commands.django.django', )))
+        ('colombe.cli.commands.help.help',
+         'colombe.cli.commands.run.run',
+         'colombe.cli.commands.django.django', )))
 
 
 def make_django_command(name, django_command=None, help=None):
@@ -48,7 +49,7 @@ def make_django_command(name, django_command=None, help=None):
     @click.argument('management_args', nargs=-1, type=click.UNPROCESSED)
     @click.pass_context
     def inner(ctx, management_args):
-        from holyter.runner.commands.django import django
+        from colombe.cli.commands.django import django
         ctx.params['management_args'] = (django_command, ) + management_args
         ctx.forward(django)
 

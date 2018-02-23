@@ -11,10 +11,10 @@ def django(ctx, management_args):
     "Execute Django subcommands."
     if len(management_args) and management_args[0] == 'test':
         if '--settings' not in management_args:
-            if os.environ['DJANGO_SETTINGS_MODULE'] == 'holyter.settings':
-                os.environ["DJANGO_SETTINGS_MODULE"] = "holyter.settings.test"
+            if os.environ['DJANGO_SETTINGS_MODULE'] == 'colombe.settings':
+                os.environ["DJANGO_SETTINGS_MODULE"] = "colombe.settings.test"
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "holyter.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "colombe.settings")
 
     from django.core.management import execute_from_command_line
     execute_from_command_line(argv=[ctx.command_path] + list(management_args))

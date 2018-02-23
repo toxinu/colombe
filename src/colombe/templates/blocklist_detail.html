@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if request.user == block_list.owner %}
+	<a href="{% url 'block-list-update' block_list.pk %}">Edit</a> |
+	<a href="{% url 'block-list-delete' block_list.pk %}">Delete</a> |
+{% endif %}
+{% if request.user.is_authenticated %}
+	{% if subscribed %}
+		<a href="{% url 'unsubscribe' block_list.pk %}">Unsubscribe</a>
+	{% else %}
+		<a href="{% url 'subscribe' block_list.pk %}">Subscribe</a>
+	{% endif %}
+{% endif %}
+
+<ul>
+	<li><span class="underline">name</span>: {{ block_list.name }}</li>
+	<li><span class="underline">description</span>: {{ block_list.description }}</li>
+	<li><span class="underline">country</span>: {{ block_list.country }}</li>
+	<li><span class="underline">users blocked</span>: {{ block_list.users_count }}</li>
+</ul>
+{% endblock %}

@@ -3,9 +3,9 @@ __all__ = [
     "__email__", "__license__", "__copyright__",
 ]
 
-__title__ = "holyter"
-__summary__ = "Holyter a community shared user blocking list for Twitter."
-__uri__ = "https://github.com/toxinu/holyter"
+__title__ = "colombe"
+__summary__ = "Colombe a community shared user blocking list for Twitter."
+__uri__ = "https://github.com/toxinu/colombe"
 
 __version__ = "0.1.0"
 

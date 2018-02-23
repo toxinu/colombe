@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Popular public lists</h2>
+<ul>
+{% for block_list in object_list %}
+    <li><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a> (<em>{{ block_list.users_count }} blocked users</em>) ({{ block_list.subscribers }} subscribers)</li>
+{% endfor %}
+</ul>
+{% endblock %}
