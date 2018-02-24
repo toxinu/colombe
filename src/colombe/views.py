@@ -1,3 +1,5 @@
+from django.db.models import Count
+from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, UpdateView
@@ -28,6 +30,9 @@ class BlockListListView(ListView):
     model = BlockList
     template_name = "blocklist_list.html"
 
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-subscribers')
+
 
 @method_decorator(login_required, name='dispatch')
 class BlockListCreateView(CreateView):
@@ -40,13 +45,13 @@ class BlockListCreateView(CreateView):
         self.object.owner = self.request.user
 
         twitter = self.request.user.twitter
-        user_ids = []
-        for name in self.request.POST.get('users').split('\r\n'):
-            user_id = twitter.get_user_id_from_screen_name(name)
-            if user_id:
-                user_ids.append(user_id)
 
-        self.object.users = user_ids
+        if self.request.POST.get('users_as_id') == 'on':
+            names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
+            self.object.users = twitter.lookup_users_from_screen_name(names)
+        else:
+            self.object.users = twitter.lookup_users_from_screen_name(
+                self.request.POST.get('users').split('\r\n'))
 
         return super().form_valid(form)
 
@@ -78,37 +83,31 @@ class BlockListUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
 
         twitter = self.request.user.twitter
-        users = []
-        for user_id in self.object.users:
-            name = twitter.get_user_screen_name_from_id(user_id)
-            if name:
-                users.append(name)
-        context["users"] = '\r\n'.join(users)
+        context["users"] = '\r\n'.join(twitter.lookup_users_from_id(self.object.users))
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.owner != self.request.user:
+            return HttpResponseForbidden()
+
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
 
-        as_id = self.request.POST.get('users_as_id') == 'on'
-
         twitter = self.request.user.twitter
-        user_ids = []
-        for name in self.request.POST.get('users').split('\r\n'):
-            if as_id:
-                try:
-                    user_id = int(name)
-                except ValueError:
-                    continue
-            else:
-                user_id = twitter.get_user_id_from_screen_name(name)
 
-            if user_id:
-                user_ids.append(user_id)
+        if self.request.POST.get('users_as_id') == 'on':
+            names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
+            self.object.users = twitter.lookup_users_from_screen_name(names)
+        else:
+            self.object.users = twitter.lookup_users_from_screen_name(
+                self.request.POST.get('users').split('\r\n'))
 
-        self.object.users = user_ids
         self.object.save()
-
         return super().form_valid(form)
 
 
@@ -117,7 +116,13 @@ class BlockListDeleteView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
-        BlockList.objects.get(pk=self.kwargs.get('pk')).delete()
+        block_list = BlockList.objects.get(pk=self.kwargs.get('pk'))
+
+        if block_list.owner != self.request.user:
+            return reverse('home')
+
+        block_list.delete()
+
         return reverse('home')
 
 

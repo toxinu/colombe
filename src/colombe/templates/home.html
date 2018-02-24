@@ -2,32 +2,61 @@
 
 {% block content %}
 <p>
-	<em>Welcome here,</em>
-	{% if request.user.is_authenticated %}
+  <em>Welcome here,</em>
+  {% if request.user.is_authenticated %}
 		<h3>Your own block lists</h3>
 		<em><a href="{% url 'block-list-add' %}">Create a new one?</a></em>
-		<ul>
-		{% for block_list in block_lists %}
-			<li><a href="{{ block_list.get_absolute_url }}">{{ block_list.name }}</a> (<em>{{ block_list.subscribers }} subscribers</em>)</li>
-		{% empty %}
-			<em>No block list for now...</em>
-		{% endfor %}
-		</ul>
+		<br><br>
+		<table>
+   			<thead>
+					<tr>
+    				<th scope="col">Name</th>
+	        	<th scope="col">Country</th>
+	        	<th scope="col">Blocked users</th>
+	      	  <th scope="col">Subscribers</th>
+  				</tr>
+   		</thead>
+   		<tbody>
+      	{% for block_list in block_lists %}
+      		<tr class="pointer" onclick="window.location='{% url 'block-list-detail' block_list.id %}';">
+         		<td scope="row" data-label="Name">{{ block_list.name }}</td>
+         		<td data-label="Country">{{ block_list.country }}</td>
+		         <td data-label="Blocked users">{{ block_list.users_count }}</td>
+         		<td data-label="Subscribers">{{ block_list.subscribers }}</td>
+      		</tr>
+      	{% empty %}
+      		<em>No block list for now...</em>
+      	{% endfor %}
+   		</tbody>
+		</table>
+		
 		<h3>Subscribed block lists</h3>
-		<ul>
-		{% for subscription in subscriptions %}
-			{% with subscription.block_list as block_list %}     
-				<li>
-					<a href="{{ block_list.get_absolute_url }}">{{ block_list.name }}</a>
-					(<em>{{ block_list.users_count }} blocked users</em>)
-				</li>
-			{% endwith %}
-		{% empty %}
-			<em>No subscribed block list for now...</em>
-		{% endfor %}
-		</ul>
+		<table>
+   		<thead>
+      	<tr>
+         <th scope="col">Name</th>
+         <th scope="col">Country</th>
+         <th scope="col">Blocked users</th>
+         <th scope="col">Subscribers</th>
+      	</tr>
+   		</thead>
+   		<tbody>
+	      {% for subscription in subscriptions %}
+	      	{% with subscription.block_list as block_list %} 
+	      	<tr class="pointer" onclick="window.location='{% url 'block-list-detail' block_list.id %}';">
+	        	<td scope="row" data-label="Name">{{ block_list.name }}</td>
+	         	<td data-label="Country">{{ block_list.country }}</td>
+	         	<td data-label="Blocked users">{{ block_list.users_count }}</td>
+	         	<td data-label="Subscribers">{{ block_list.subscribers }}</td>
+	      	</tr>
+	      	{% endwith %}
+	      {% empty %}
+	      	<em>No subscribed block list for now...</em>
+	      {% endfor %}
+   		</tbody>
+		</table>
 	{% else %}
-	<p>Presentating Colombe.</p>
+		<p>Presentating Colombe.</p>
 	{% endif %}
 </p>
 {% endblock %}

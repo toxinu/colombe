@@ -2,9 +2,26 @@
 
 {% block content %}
 <h2>Popular public lists</h2>
-<ul>
-{% for block_list in object_list %}
-    <li><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a> (<em>{{ block_list.users_count }} blocked users</em>) ({{ block_list.subscribers }} subscribers)</li>
-{% endfor %}
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Author</th>
+      <th scope="col">Country</th>
+      <th scope="col">Blocked users</th>
+      <th scope="col">Subscribers</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for block_list in object_list %}
+      <tr class="pointer" onclick="window.location='{% url 'block-list-detail' block_list.id %}';">
+        <td scope="row" data-label="Name">{{ block_list.name }}</td>
+        <td data-label="Authr">{{ block_list.owner.username }}</td>
+        <td data-label="Country">{{ block_list.country }}</td>
+        <td data-label="Blocked users">{{ block_list.users_count }}</td>
+        <td data-label="Subscribers">{{ block_list.subscribers }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

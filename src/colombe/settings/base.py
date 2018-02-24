@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_countries',
     'social_django',
+    # 'cachalot',
     # Colombe
     'colombe',
 ]
@@ -86,6 +87,9 @@ CACHES = {
         }
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 CELERY_BROKER_URL = 'amqp://localhost:5683/colombe'
 

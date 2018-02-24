@@ -61,12 +61,18 @@ class User(AbstractUser):
         return Twitter(self.access_token, self.access_token_secret)
 
     def subscribe_to_block_list(self, block_list):
-        subscription = Subscription.objects.create(user=self, block_list=block_list)
+        if Subscription.objects.filter(user=self, block_list=block_list).exists():
+            return
+
+        Subscription.objects.create(user=self, block_list=block_list)
 
         synchronize_subscription.delay(self.id, block_list.users, [])
 
     def unsubscribe_to_block_list(self, block_list):
-        Subscription.objects.filter(user=self, block_list=block_list).delete()
+        if not Subscription.objects.filter(user=self, block_list=block_list).exists():
+            return
+
+        Subscription.objects.get(user=self, block_list=block_list).delete()
 
         synchronize_subscription.delay(self.id, [], block_list.users)
 
@@ -77,6 +83,7 @@ class BlockList(BaseModelMixin, models.Model):
     country = CountryField(null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     users = ArrayField(models.BigIntegerField(), null=True, blank=True)
+    subscribers = models.IntegerField(default=0)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
@@ -98,10 +105,6 @@ class BlockList(BaseModelMixin, models.Model):
 
         return 0
 
-    @cached_property
-    def subscribers(self):
-        return Subscription.objects.filter(block_list=self).count()
-
     def post_save(self, *args, **kwargs):
         if self.has_changed('users'):
             self.synchronize_subscriptions()
@@ -117,10 +120,24 @@ class BlockList(BaseModelMixin, models.Model):
             synchronize_subscription.delay(subscription.user.id, to_add, to_remove)
 
 
-class Subscription(models.Model):
+class Subscription(BaseModelMixin, models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     block_list = models.ForeignKey('BlockList', on_delete=models.CASCADE)
-    enabled = models.BooleanField(default=False)
+    enabled = models.BooleanField(default=True)
+
+    fields_to_watch = ['id']
 
     class Meta:
         unique_together = ('user', 'block_list')
+
+    def post_save(self, *args, **kwargs):
+        if self.has_changed('id'):
+            self.block_list.subscribers += 1
+            self.block_list.save(update_fields=('subscribers', ))
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.block_list.subscribers -= 1
+        if self.block_list.subscribers < 0:
+            self.block_list.subscribers = 0
+        self.block_list.save(update_fields=('subscribers', ))
