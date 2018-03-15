@@ -1,3 +1,5 @@
+import uuid
+
 from django.urls import reverse
 from django.db import models
 from django.utils.functional import cached_property
@@ -42,6 +44,8 @@ class BaseModelMixin:
 
 
 class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     subscriptions = models.ManyToManyField('BlockList', through='Subscription')
 
     @property
@@ -76,8 +80,13 @@ class User(AbstractUser):
 
         synchronize_subscription.delay(self.id, [], block_list.users)
 
+    def get_blocked_user_ids(self):
+        return self.twitter.api.GetBlocksIDs()
+
 
 class BlockList(BaseModelMixin, models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField(max_length=2048, null=True, blank=True)
     country = CountryField(null=True, blank=True)
@@ -121,6 +130,8 @@ class BlockList(BaseModelMixin, models.Model):
 
 
 class Subscription(BaseModelMixin, models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     block_list = models.ForeignKey('BlockList', on_delete=models.CASCADE)
     enabled = models.BooleanField(default=True)

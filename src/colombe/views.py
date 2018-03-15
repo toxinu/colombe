@@ -31,7 +31,7 @@ class BlockListListView(ListView):
     template_name = "blocklist_list.html"
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-subscribers')
+        return self.model.objects.all().order_by('-subscribers')[:30]
 
 
 @method_decorator(login_required, name='dispatch')
@@ -46,12 +46,15 @@ class BlockListCreateView(CreateView):
 
         twitter = self.request.user.twitter
 
-        if self.request.POST.get('users_as_id') == 'on':
-            names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
-            self.object.users = twitter.lookup_users_from_screen_name(names)
-        else:
-            self.object.users = twitter.lookup_users_from_screen_name(
-                self.request.POST.get('users').split('\r\n'))
+        if self.request.POST.get('mode') == "import":
+            self.object.users = twitter.api.GetBlocksIDs()
+        else:            
+            if self.request.POST.get('users_as_id') == 'on':
+                names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
+                self.object.users = twitter.lookup_users_from_screen_name(names)
+            else:
+                self.object.users = twitter.lookup_users_from_screen_name(
+                    self.request.POST.get('users').split('\r\n'))
 
         return super().form_valid(form)
 
@@ -69,6 +72,9 @@ class BlockListDetailView(TemplateView):
             context["subscribed"] = False
             if Subscription.objects.filter(user=self.request.user, block_list=block_list).exists():
                 context["subscribed"] = True
+            
+            context["block_list"].user_names = self.request.user.twitter.lookup_users_from_id(
+                block_list.users)
 
         return context
 

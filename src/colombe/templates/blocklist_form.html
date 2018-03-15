@@ -1,13 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h2>Create a new list</h2>
 <form method="POST" class="post-form">{% csrf_token %}
 	{{ form.as_p }}
 	<label for="id_users">Users:</label>
 	<br />
-	<em><label for="id_users_as_id">As ID?</label></em>
-	<input type="checkbox" name="users_as_id" id="id_users_as_id">
-	<textarea name="users" cols="40" rows="10" maxlength="2048" id="id_users">{{ users }}</textarea>
-    <button type="submit" class="save btn btn-default">Save</button>
+	<input id="tab-new" type="radio" name="tabs" class="hidden" checked>
+	<label for="tab-new">Manual</label>
+
+	<input id="tab-import" type="radio" name="tabs" class="hidden">
+	<label for="tab-import">Import</label>
+
+	<section id="content-new">
+		<div class="row">
+			<div class="column">
+				<u>Help:</u>
+				<div class="helptext">
+					Each line must be only one username.<br>
+					Not found users will be discard.<br>
+					If you want to specify IDs instead of username, just check "As ID?" below.
+				</div>
+				<u>Example:</u>
+				<div class="helptext">
+					RealDonalTrump<br>
+					mlp_officiel<br>
+					anotherRandom_user
+				</div>
+			</div>
+			<div class="column">
+					<em><label for="id_users_as_id">As ID?</label></em>
+				<input type="checkbox" name="users_as_id" id="id_users_as_id">
+				<textarea name="users" style="resize: vertical; height: 300px;" id="id_users">{{ users }}</textarea>
+			</div>
+		</div>
+
+		<button type="submit" name="mode" value="manual" class="save btn btn-default">Save</button>
+	</section>
+		
+	<section id="content-import">
+		<div class="helptext">All your blocked users from your Twitter account will be imported into this new list.</div>
+		<br>
+		<button type="submit" name="mode" value="import" class="save btn btn-default">Import and save</button>
+	</section>
 </form>
+
+<style>
+	section {display: none; padding: 20px 0 0; border-top: 1px solid #ddd;}
+	input.hidden {display: none;}
+	label {display: inline-block; margin: 0 0 -1px; padding: 15px 25px; font-weight: 600; text-align: center; color: #bbb; border: 1px solid transparent;}
+	label:before {font-family: fontawesome; font-weight: normal; margin-right: 10px;}
+	label:hover {color: #888; cursor: pointer;}
+	input:checked + label {color: #555; border: 1px solid #ddd; border-top: 2px solid #555; border-bottom: 1px solid #ddd;}
+	#tab-new:checked ~ #content-new,
+	#tab-import:checked ~ #content-import {display: block;}
+</style>
 {% endblock %}
