@@ -2,22 +2,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
+        .table {overflow-x:auto;}
         .header {padding: 10px 5px 10px 5px; background: #f4f5f6; border: .1rem solid #d1d1d1; border-top: 0;}
         .link {cursor: pointer; color: #9b4dca}
-        .helptext {border-left: 0.3rem solid #d1d1d1; padding: 1rem 1.5rem; margin: 10px 5px 10px 5px;}
-        .footer {font-size:70%; left: 0; bottom: 0; width: 100%; text-align: center;}
+        .helptext {border-left: 0.3rem solid #9b4dca; padding: 1rem 1.5rem; margin: 10px 5px 10px 5px;}
+        .footer {font-size:70%; left: 0; bottom: 0; width: 100%; text-align: center; margin-bottom:30px;}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row header">
             <div class="column"><a href="/" class="brand-logo">Colombe</a></div>
-            <div class="column column-50 column-offset-25" style="text-align:right;">
+            <div class="column" style="text-align:right;">
                 <a href="{% url 'block-list-list' %}">Lists</a> |
                 {% if request.user.is_authenticated %}
                     <a href="{% url 'block-list-add' %}">New</a> |

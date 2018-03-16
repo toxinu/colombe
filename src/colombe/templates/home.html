@@ -5,55 +5,58 @@
 	<div class="column">
 	{% if request.user.is_authenticated %}
 		<h2>Your lists</h2>
-		<table>
-			<thead>
-				<tr>
-					<th scope="col">Name</th>
-					<th scope="col">Country</th>
-					<th scope="col">Blocked users</th>
-					<th scope="col">Subscribers</th>
-				</tr>
-			</thead>
-			<tbody>
-		    {% for block_list in block_lists %}
-				<tr>
-					<td scope="row" data-label="Name"><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a></td>
-					<td data-label="Country">{{ block_list.country.name|default:"-" }}</td>
-					<td data-label="Blocked users">{{ block_list.users_count }}</td>
-					<td data-label="Subscribers">{{ block_list.subscribers }}</td>
-			   	</tr>
-		   	{% empty %}
-			   	<em>No block list for now...</em>
-		   	{% endfor %}
-			</tbody>
-		 </table>
-		
+		<div class="table">
+			<table>
+				<thead>
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Country</th>
+						<th scope="col">Blocked users</th>
+						<th scope="col">Subscribers</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for block_list in block_lists %}
+					<tr>
+						<td scope="row" data-label="Name"><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a></td>
+						<td data-label="Country">{{ block_list.country.name|default:"-" }}</td>
+						<td data-label="Blocked users">{{ block_list.users_count }}</td>
+						<td data-label="Subscribers">{{ block_list.subscribers }}</td>
+					</tr>
+				{% empty %}
+					<em>No block list for now...</em>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
 		<h2>Your subscriptions</h2>
 		{% if subscriptions %}
-		<table>
-			<thead>
-				<tr>
-		  			<th scope="col">Name</th>
-					<th scope="col">Author</th>
-					<th scope="col">Country</th>
-					<th scope="col">Blocked users</th>
-					<th scope="col">Subscribers</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for subscription in subscriptions %}
-					{% with subscription.block_list as block_list %} 
-						<tr>
-							<td scope="row" data-label="Name"><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a></td>
-							<td data-label="Author"><a target="_blank" href="https://twitter.com/{{ block_list.owner.username }}">{{ block_list.owner.username }}</a></td>
-							<td data-label="Country">{{ block_list.country.name|default:"-" }}</td>
-							<td data-label="Blocked users">{{ block_list.users_count }}</td>
-							<td data-label="Subscribers">{{ block_list.subscribers }}</td>
-						</tr>
-					{% endwith %}
-				{% endfor %}
-			</tbody>
-		</table>
+		<div class="table">
+			<table>
+				<thead>
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Author</th>
+						<th scope="col">Country</th>
+						<th scope="col">Blocked users</th>
+						<th scope="col">Subscribers</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for subscription in subscriptions %}
+						{% with subscription.block_list as block_list %} 
+							<tr>
+								<td scope="row" data-label="Name"><a href="{% url 'block-list-detail' block_list.id %}">{{ block_list.name }}</a></td>
+								<td data-label="Author"><a target="_blank" href="https://twitter.com/{{ block_list.owner.username }}">{{ block_list.owner.username }}</a></td>
+								<td data-label="Country">{{ block_list.country.name|default:"-" }}</td>
+								<td data-label="Blocked users">{{ block_list.users_count }}</td>
+								<td data-label="Subscribers">{{ block_list.subscribers }}</td>
+							</tr>
+						{% endwith %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 		{% else %}
 			<p>No subscribed block list for now...</p>
 		{% endif %}

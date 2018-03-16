@@ -7,13 +7,13 @@
 	<label for="id_users">Users:</label>
 	<br />
 	<input id="tab-manual-usernames" type="radio" name="tabs" class="hidden" checked>
-	<label for="tab-manual-usernames">Usernames</label>
+	<label class="tab" for="tab-manual-usernames">Usernames</label>
 
 	<input id="tab-manual-ids" type="radio" name="tabs" class="hidden">
-	<label for="tab-manual-ids">IDs</label>
+	<label class="tab" for="tab-manual-ids">IDs</label>
 
 	<input id="tab-import" type="radio" name="tabs" class="hidden">
-	<label for="tab-import">Import from Twitter</label>
+	<label class="tab" for="tab-import">Import from Twitter</label>
 
 	<section id="content-manual-usernames">
 		<div class="row">
@@ -71,12 +71,14 @@
 <style>
 	section {display: none; padding: 20px 0 0; border-top: 1px solid #ddd;}
 	input.hidden {display: none;}
-	label {display: inline-block; margin: 0 0 -1px; padding: 15px 25px; font-weight: 600; text-align: center; color: #bbb; border: 1px solid transparent;}
+	label {display: inline-block; margin: 0 0 -1px; padding: 10px 10px; font-weight: 600; text-align: center; color: #bbb; border: 1px solid transparent;}
 	label:before {font-family: fontawesome; font-weight: normal; margin-right: 10px;}
 	label:hover {color: #888; cursor: pointer;}
-	input:checked + label {color: #555; border: 1px solid #ddd; border-top: 2px solid #555; border-bottom: 1px solid #ddd;}
+	label.tab {font-size:80%;}
+	input:checked + label {color: #555; border: 1px solid #ddd; border-top: 2px solid #9b4dca; border-bottom: 1px solid #ddd;}
 	#tab-manual-usernames:checked ~ #content-manual-usernames,
 	#tab-manual-ids:checked ~ #content-manual-ids,
 	#tab-import:checked ~ #content-import {display: block;}
+	p {margin-bottom: 0px;}
 </style>
 {% endblock %}
