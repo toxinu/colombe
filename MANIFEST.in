@@ -1,0 +1,6 @@
+include setup.py README.md LICENSE
+recursive-include src/colombe *.html
+recursive-include src/colombe/locale *
+exclude src/colombe/settings/local.py
+exclude src/colombe/settings/production.py
+global-exclude *~

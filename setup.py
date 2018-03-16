@@ -16,6 +16,7 @@ with open(os.path.join(base_dir, "README.md")) as f:
 requires = [
     "Django==2.0.2",
     "django-cachalot==1.5.0",
+    'django_extensions==2.0.6',
     "celery==4.1.0",
     "click==6.7",
     "django-countries==5.1.1",
@@ -41,7 +42,7 @@ setup(
     license=about["__license__"],
     entry_points={'console_scripts': ['colombe = colombe.cli:main']},
     extras_require={'dev': ['docker-compose==1.19.0'],
-                    'tests': []},
+                    'production': ['waitress==1.1.0']},
     classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python',
