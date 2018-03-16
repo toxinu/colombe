@@ -1,5 +1,7 @@
 import uuid
 
+import bleach
+import markdown
 from django.urls import reverse
 from django.db import models
 from django.utils.functional import cached_property
@@ -121,8 +123,8 @@ class BlockList(BaseModelMixin, models.Model):
     def synchronize_subscriptions(self, ids_to_remove=[], ids_to_add=[]):
         initial_users = self.get_initial("users")
 
-        to_add = set(self.users or []).difference(initial_users or [])
-        to_remove = set(initial_users or []).difference(self.users or [])
+        to_add = list(set(self.users or []).difference(initial_users or []))
+        to_remove = list(set(initial_users or []).difference(self.users or []))
 
         for subscription in Subscription.objects.filter(
                 block_list=self, enabled=True).only('id', 'user').select_related('user'):

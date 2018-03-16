@@ -6,20 +6,22 @@
 	{{ form.as_p }}
 	<label for="id_users">Users:</label>
 	<br />
-	<input id="tab-new" type="radio" name="tabs" class="hidden" checked>
-	<label for="tab-new">Manual</label>
+	<input id="tab-manual-usernames" type="radio" name="tabs" class="hidden" checked>
+	<label for="tab-manual-usernames">Usernames</label>
+
+	<input id="tab-manual-ids" type="radio" name="tabs" class="hidden">
+	<label for="tab-manual-ids">IDs</label>
 
 	<input id="tab-import" type="radio" name="tabs" class="hidden">
-	<label for="tab-import">Import</label>
+	<label for="tab-import">Import from Twitter</label>
 
-	<section id="content-new">
+	<section id="content-manual-usernames">
 		<div class="row">
 			<div class="column">
 				<u>Help:</u>
 				<div class="helptext">
 					Each line must be only one username.<br>
 					Not found users will be discard.<br>
-					If you want to specify IDs instead of username, just check "As ID?" below.
 				</div>
 				<u>Example:</u>
 				<div class="helptext">
@@ -29,13 +31,34 @@
 				</div>
 			</div>
 			<div class="column">
-					<em><label for="id_users_as_id">As ID?</label></em>
-				<input type="checkbox" name="users_as_id" id="id_users_as_id">
-				<textarea name="users" style="resize: vertical; height: 300px;" id="id_users">{{ users }}</textarea>
+				<textarea name="usernames" style="resize: vertical; height: 300px;" id="id_users">{{ usernames }}</textarea>
 			</div>
 		</div>
 
-		<button type="submit" name="mode" value="manual" class="save btn btn-default">Save</button>
+		<button type="submit" name="mode" value="manual-usernames" class="save btn btn-default">Save</button>
+	</section>
+
+	<section id="content-manual-ids">
+		<div class="row">
+			<div class="column">
+				<u>Help:</u>
+				<div class="helptext">
+					Each line must be only one user id.<br>
+					Not found users will be discard.<br>
+				</div>
+				<u>Example:</u>
+				<div class="helptext">
+					1234123127<br>
+					2090329<br>
+					778774399990
+				</div>
+			</div>
+			<div class="column">
+				<textarea name="user_ids" style="resize: vertical; height: 300px;" id="id_users">{{ user_ids }}</textarea>
+			</div>
+		</div>
+
+		<button type="submit" name="mode" value="manual-ids" class="save btn btn-default">Save</button>
 	</section>
 		
 	<section id="content-import">
@@ -52,7 +75,8 @@
 	label:before {font-family: fontawesome; font-weight: normal; margin-right: 10px;}
 	label:hover {color: #888; cursor: pointer;}
 	input:checked + label {color: #555; border: 1px solid #ddd; border-top: 2px solid #555; border-bottom: 1px solid #ddd;}
-	#tab-new:checked ~ #content-new,
+	#tab-manual-usernames:checked ~ #content-manual-usernames,
+	#tab-manual-ids:checked ~ #content-manual-ids,
 	#tab-import:checked ~ #content-import {display: block;}
 </style>
 {% endblock %}

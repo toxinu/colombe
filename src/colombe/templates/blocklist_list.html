@@ -17,7 +17,7 @@
       {% for block_list in object_list %}
         <tr>
           <td class="link" onclick="window.location='{% url 'block-list-detail' block_list.id %}';" scope="row" data-label="Name">{{ block_list.name }}</td>
-          <td data-label="Authr">{{ block_list.owner.username }}</td>
+          <td data-label="Author"><a target="_blank" href="https://twitter.com/{{ block_list.owner.username }}">{{ block_list.owner.username }}</a></td>
           <td data-label="Country">{{ block_list.country|default:"-" }}</td>
           <td data-label="Blocked users">{{ block_list.users_count }}</td>
           <td data-label="Subscribers">{{ block_list.subscribers }}</td>

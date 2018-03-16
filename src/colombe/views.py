@@ -45,16 +45,17 @@ class BlockListCreateView(CreateView):
         self.object.owner = self.request.user
 
         twitter = self.request.user.twitter
+        mode = self.request.POST.get('mode')
 
-        if self.request.POST.get('mode') == "import":
+        if mode == "import":
             self.object.users = twitter.api.GetBlocksIDs()
-        else:            
-            if self.request.POST.get('users_as_id') == 'on':
-                names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
-                self.object.users = twitter.lookup_users_from_screen_name(names)
-            else:
-                self.object.users = twitter.lookup_users_from_screen_name(
-                    self.request.POST.get('users').split('\r\n'))
+        elif mode == "manual-ids":       
+            names = twitter.lookup_users_from_id(
+                self.request.POST.get('user_ids').split('\r\n'))
+            self.object.users = twitter.lookup_users_from_screen_name(names)
+        else:
+            self.object.users = twitter.lookup_users_from_screen_name(
+                self.request.POST.get('usernames').split('\r\n'))
 
         return super().form_valid(form)
 
@@ -70,7 +71,8 @@ class BlockListDetailView(TemplateView):
 
         if self.request.user.is_authenticated:
             context["subscribed"] = False
-            if Subscription.objects.filter(user=self.request.user, block_list=block_list).exists():
+            if Subscription.objects.filter(
+                    user=self.request.user, block_list=block_list).exists():
                 context["subscribed"] = True
             
             context["block_list"].user_names = self.request.user.twitter.lookup_users_from_id(
@@ -89,7 +91,9 @@ class BlockListUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
 
         twitter = self.request.user.twitter
-        context["users"] = '\r\n'.join(twitter.lookup_users_from_id(self.object.users))
+        context["usernames"] = '\r\n'.join(
+            twitter.lookup_users_from_id(self.object.users))
+        context["user_ids"] = '\r\n'.join([str(u) for u in self.object.users])
 
         return context
 
@@ -105,13 +109,17 @@ class BlockListUpdateView(UpdateView):
         self.object = form.save(commit=False)
 
         twitter = self.request.user.twitter
+        mode = self.request.POST.get('mode')
 
-        if self.request.POST.get('users_as_id') == 'on':
-            names = twitter.lookup_users_from_id(self.request.POST.get('users').split('\r\n'))
-            self.object.users = twitter.lookup_users_from_screen_name(names)
+        if mode == "import":
+            self.object.users = twitter.api.GetBlocksIDs()
+        elif mode == "manual-ids":
+            self.object.users = twitter.lookup_users_from_screen_name(
+                twitter.lookup_users_from_id(
+                    self.request.POST.get('user_ids').split('\r\n')))
         else:
             self.object.users = twitter.lookup_users_from_screen_name(
-                self.request.POST.get('users').split('\r\n'))
+                self.request.POST.get('usernames').split('\r\n'))
 
         self.object.save()
         return super().form_valid(form)

@@ -15,7 +15,7 @@
 	</div>
 	<div class="column" style="text-align: right;">
 		{% if request.user == block_list.owner %}
-			<a class="button button-clear"href="{% url 'block-list-delete' block_list.pk %}">Delete</a>
+			<a class="button button-clear" href="{% url 'block-list-delete' block_list.pk %}" onclick="if (!confirm('Delete this list?')) return false;" >Delete</a>
 			<a class="button"href="{% url 'block-list-update' block_list.pk %}">Edit</a>
 		{% endif %}
 	</div>
@@ -32,7 +32,7 @@
 </div>
 <hr>
 <div class="row">
-	<div class="column"><h4>Description</h4>{{ block_list.description|default:"..." }}</div>
+	<div class="column"><h4>Description</h4>{{ block_list.description|default:"..."|escape }}</div>
 </div>
 <hr>
 <div class="row">
@@ -51,11 +51,6 @@
 	</div>
 </div>
 <style>
-	ul.flexible {
-		height: 100px;
-		display: flex;
-		flex-direction: column;
-		flex-wrap: wrap;
-		}
+	ul.flexible {height: 100px; display: flex; flex-direction: column; flex-wrap: wrap;}
 </style>
 {% endblock %}
