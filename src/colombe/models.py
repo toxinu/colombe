@@ -1,7 +1,5 @@
 import uuid
 
-import bleach
-import markdown
 from django.urls import reverse
 from django.db import models
 from django.utils.functional import cached_property
