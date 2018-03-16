@@ -29,6 +29,8 @@ class BaseModelMixin:
         pass
 
     def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.__initial_fields['id'] = None
         self.pre_save(*args, **kwargs)
         result = super().save(*args, **kwargs)
         self.post_save(*args, **kwargs)
