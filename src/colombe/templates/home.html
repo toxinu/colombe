@@ -24,7 +24,7 @@
 						<td data-label="Subscribers">{{ block_list.subscribers }}</td>
 					</tr>
 				{% empty %}
-					<em>No block list for now...</em>
+					<p>You can create your very first list <a href="{% url 'block-list-add' %}">here</a>!</p>
 				{% endfor %}
 				</tbody>
 			</table>
@@ -58,10 +58,14 @@
 			</table>
 		</div>
 		{% else %}
-			<p>No subscribed block list for now...</p>
+			<p>You don't have any subscriptions. Take a look at <a href="{% url 'block-list-list' %}">popular lists!</a></p>
 		{% endif %}
 	{% else %}
-		<p>Presentating Colombe.</p>
+		<p>
+			Colombe is a collaborative tool to share Twitter blocked users lists to sanitize your timeline.<br>
+			Subscribe to a list and your Twitter account will be synchronize with it.<br><br>
+			Best way to start is to <a href="{% url "social:begin" "twitter" %}">log in</a> with your Twitter account and you'll be able to subscribe to <a href="/block-list">existing lists</a> or create your very own.
+		</p>
 	{% endif %}
 	</div>
 </div>
